@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CutScript — Barber Consultation App</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0f0e0d;
+    --cream: #f5f0e8;
+    --warm: #c8a97e;
+    --gold: #b8864e;
+    --rust: #9b4d2e;
+    --light: #faf8f4;
+    --muted: #7a7265;
+    --card: #ffffff;
+    --border: #e8e0d4;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--light);
+    color: var(--ink);
+    min-height: 100vh;
+    max-width: 430px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--ink);
+    padding: 18px 20px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--warm);
+    letter-spacing: -0.5px;
+  }
+  .logo span { color: #fff; }
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+
+  /* ── NAV TABS ── */
+  nav {
+    background: var(--ink);
+    display: flex;
+    border-top: 1px solid #2a2826;
+  }
+  nav button {
+    flex: 1;
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 10px 4px;
+    cursor: pointer;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    transition: color 0.2s;
+    border-bottom: 2px solid transparent;
+  }
+  nav button.active {
+    color: var(--warm);
+    border-bottom-color: var(--warm);
+  }
+
+  /* ── SCREENS ── */
+  .screen { display: none; padding: 20px 16px 100px; }
+  .screen.active { display: block; }
+
+  /* ── SECTION TITLE ── */
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 4px;
+  }
+  .section-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--card);
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--cream);
+    border: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .client-name {
+    font-weight: 600;
+    font-size: 15px;
+  }
+  .client-meta {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  .tag {
+    display: inline-block;
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    font-size: 11px;
+    padding: 3px 10px;
+    color: var(--muted);
+    margin-right: 4px;
+    margin-top: 6px;
+  }
+  .tag.gold {
+    background: #fff8ee;
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+
+  /* ── BUTTONS ── */
+  .btn {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    border-radius: 12px;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+    letter-spacing: 0.3px;
+  }
+  .btn-primary {
+    background: var(--ink);
+    color: var(--warm);
+  }
+  .btn-primary:hover { background: #2a2826; }
+  .btn-gold {
+    background: linear-gradient(135deg, var(--gold), var(--rust));
+    color: #fff;
+  }
+  .btn-outline {
+    background: none;
+    border: 1.5px solid var(--border);
+    color: var(--ink);
+  }
+  .btn-sm {
+    padding: 8px 16px;
+    font-size: 12px;
+    width: auto;
+    display: inline-block;
+    border-radius: 8px;
+  }
+
+  /* ── FORM ELEMENTS ── */
+  label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+    margin-top: 14px;
+  }
+  input, textarea, select {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1.5px solid var(--border);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    background: var(--card);
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  input:focus, textarea:focus, select:focus {
+    border-color: var(--gold);
+  }
+  textarea { resize: vertical; min-height: 80px; }
+
+  /* ── PHOTO UPLOAD ── */
+  .photo-upload {
+    border: 2px dashed var(--border);
+    border-radius: 14px;
+    padding: 32px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    background: var(--cream);
+    position: relative;
+  }
+  .photo-upload:hover { border-color: var(--gold); }
+  .photo-upload input[type=file] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: none;
+  }
+  .photo-upload-icon { font-size: 36px; margin-bottom: 8px; }
+  .photo-upload-text { font-size: 14px; color: var(--muted); }
+  .photo-preview {
+    width: 100%;
+    max-height: 280px;
+    object-fit: cover;
+    border-radius: 12px;
+    display: none;
+    margin-top: 12px;
+  }
+
+  /* ── STYLE GRID ── */
+  .style-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .style-card {
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.2s, transform 0.15s;
+    background: var(--card);
+  }
+  .style-card:hover { transform: scale(1.02); }
+  .style-card.selected { border-color: var(--gold); }
+  .style-card img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    display: block;
+    background: var(--cream);
+  }
+  .style-card-label {
+    padding: 8px 10px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .style-card-sub {
+    padding: 0 10px 8px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .style-card.selected .style-card-label::after {
+    content: ' ✓';
+    color: var(--gold);
+  }
+
+  /* ── INSTRUCTION SHEET ── */
+  .instruction-sheet {
+    background: var(--ink);
+    color: #fff;
+    border-radius: 16px;
+    padding: 20px;
+    margin-top: 16px;
+  }
+  .instruction-sheet h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    color: var(--warm);
+    margin-bottom: 12px;
+  }
+  .instruction-sheet p, .instruction-sheet li {
+    font-size: 13px;
+    line-height: 1.7;
+    color: #d4cfc8;
+  }
+  .instruction-sheet ul {
+    padding-left: 18px;
+    margin-top: 8px;
+  }
+  .instruction-sheet .section {
+    margin-bottom: 14px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #2a2826;
+  }
+  .instruction-sheet .section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+  .instruction-sheet .section-label {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+
+  /* ── CLIENT ROW ── */
+  .client-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+  }
+  .client-row:last-child { border-bottom: none; }
+  .client-row-info { flex: 1; }
+  .client-row-name { font-weight: 600; font-size: 14px; }
+  .client-row-meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .chevron { color: var(--muted); font-size: 16px; }
+
+  /* ── HISTORY TIMELINE ── */
+  .timeline { margin-top: 10px; }
+  .timeline-item {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .timeline-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--gold);
+    margin-top: 5px;
+    flex-shrink: 0;
+    position: relative;
+  }
+  .timeline-dot::after {
+    content: '';
+    position: absolute;
+    left: 4px;
+    top: 10px;
+    width: 2px;
+    height: calc(100% + 10px);
+    background: var(--border);
+  }
+  .timeline-item:last-child .timeline-dot::after { display: none; }
+  .timeline-date { font-size: 11px; color: var(--muted); margin-bottom: 2px; }
+  .timeline-desc { font-size: 13px; }
+
+  /* ── LOADING ── */
+  .loading-bar {
+    height: 3px;
+    background: linear-gradient(90deg, var(--gold), var(--rust), var(--warm), var(--gold));
+    background-size: 200% 100%;
+    border-radius: 3px;
+    animation: shimmer 1.5s infinite;
+    margin: 12px 0;
+    display: none;
+  }
+  @keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  /* ── PILL TABS ── */
+  .pill-tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .pill-tab {
+    padding: 7px 14px;
+    border-radius: 20px;
+    border: 1.5px solid var(--border);
+    background: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .pill-tab.active {
+    background: var(--ink);
+    color: var(--warm);
+    border-color: var(--ink);
+  }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15,14,13,0.6);
+    z-index: 200;
+    display: none;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--light);
+    border-radius: 20px 20px 0 0;
+    padding: 24px 20px 40px;
+    width: 100%;
+    max-width: 430px;
+    max-height: 85vh;
+    overflow-y: auto;
+    animation: slideUp 0.3s ease;
+  }
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+  .modal-handle {
+    width: 40px;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--border);
+    margin: 0 auto 20px;
+  }
+
+  /* ── MISC ── */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 16px 0;
+  }
+  .badge {
+    background: var(--rust);
+    color: #fff;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    letter-spacing: 0.5px;
+  }
+  .empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--muted);
+  }
+  .empty-icon { font-size: 48px; margin-bottom: 12px; }
+  .empty-title { font-weight: 600; margin-bottom: 6px; font-size: 15px; color: var(--ink); }
+  .empty-sub { font-size: 13px; }
+  .fab {
+    position: fixed;
+    bottom: 24px;
+    right: 50%;
+    transform: translateX(50%);
+    background: linear-gradient(135deg, var(--gold), var(--rust));
+    color: #fff;
+    border: none;
+    border-radius: 30px;
+    padding: 14px 28px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(184,134,78,0.4);
+    z-index: 50;
+    display: none;
+  }
+  .fab.visible { display: block; }
+  .lang-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .lang-toggle-label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .lang-btn {
+    padding: 7px 14px;
+    border-radius: 20px;
+    border: 1.5px solid var(--border);
+    background: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--muted);
+  }
+  .lang-btn.active {
+    background: var(--ink);
+    color: var(--warm);
+    border-color: var(--ink);
+  }
+  .share-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .section-summary {
+    font-size: 14px;
+    color: #e8e0d4;
+    cursor: pointer;
+    padding: 6px 0 2px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+    line-height: 1.5;
+  }
+  .section-summary:hover { color: #fff; }
+  .expand-hint {
+    font-size: 10px;
+    color: var(--gold);
+    white-space: nowrap;
+    margin-top: 2px;
+    flex-shrink: 0;
+    letter-spacing: 0.3px;
+  }
+  .section-detail {
+    font-size: 12px;
+    color: #b0a898;
+    line-height: 1.7;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid #2a2826;
+    animation: fadeIn 0.2s ease;
+  }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+  .api-key-note {
+    background: #fff8ee;
+    border: 1px solid var(--gold);
+    border-radius: 10px;
+    padding: 12px;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+  .chevron-right::after { content: '›'; }
+</style>
+</head>
+<body>
+
+
+
+<!-- CLIENT DETAIL MODAL -->
+<div class="modal-overlay" id="clientModal">
+  <div class="modal" id="clientModalContent"></div>
+</div>
+
+<header>
+  <div class="logo">Cut<span>Script</span></div>
+  <div class="header-right"></div>
+</header>
+
+<nav>
+  <button class="active" onclick="showScreen('consult')">✂ Consult</button>
+  <button onclick="showScreen('styles')">✨ Styles</button>
+  <button onclick="showScreen('clients')">👤 Clients</button>
+</nav>
+
+<!-- ═══════════════════════════════════ -->
+<!-- SCREEN 1: NEW CONSULTATION         -->
+<!-- ═══════════════════════════════════ -->
+<div class="screen active" id="screen-consult">
+  <p class="section-title">New Consult</p>
+  <p class="section-sub">Start a client consultation session</p>
+
+  <!-- Client selector -->
+  <div class="card">
+    <label style="margin-top:0">Client</label>
+    <select id="consultClient" onchange="onClientSelect()">
+      <option value="">— Select or create client —</option>
+    </select>
+    <div id="newClientFields" style="display:none">
+      <label>Client Name</label>
+      <input type="text" id="newClientName" placeholder="e.g. Marcus Williams" />
+      <label>Notes (optional)</label>
+      <input type="text" id="newClientNote" placeholder="e.g. prefers natural look" />
+    </div>
+    <div style="height:10px"></div>
+    <button class="btn btn-outline btn-sm" onclick="toggleNewClient()">+ New Client</button>
+  </div>
+
+  <!-- Photo upload -->
+  <div class="card">
+    <label style="margin-top:0">Current State Photo</label>
+    <div class="photo-upload" id="photoUploadArea">
+      <input type="file" accept="image/*" capture="environment" onchange="handlePhoto(event)" />
+      <div class="photo-upload-icon">📷</div>
+      <div class="photo-upload-text">Tap to take photo or upload</div>
+    </div>
+    <img id="photoPreview" class="photo-preview" />
+  </div>
+
+  <!-- Style selection -->
+  <div class="card">
+    <label style="margin-top:0">Desired Style</label>
+    <div class="pill-tabs">
+      <button class="pill-tab active" onclick="filterStyles('all', this)">All</button>
+      <button class="pill-tab" onclick="filterStyles('hair', this)">Hair</button>
+      <button class="pill-tab" onclick="filterStyles('beard', this)">Beard</button>
+      <button class="pill-tab" onclick="filterStyles('fade', this)">Fade</button>
+    </div>
+    <div class="style-grid" id="consultStyleGrid"></div>
+    <div id="selectedStyleInfo" style="display:none">
+      <hr class="divider">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="badge">Selected</span>
+        <span id="selectedStyleName" style="font-weight:600;font-size:14px"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Extra notes -->
+  <div class="card">
+    <label style="margin-top:0">Additional Instructions</label>
+    <textarea id="extraNotes" placeholder="e.g. keep length on top, tight taper on sides, skin fade behind ears..."></textarea>
+  </div>
+
+  <div class="lang-toggle">
+    <span class="lang-toggle-label">Language</span>
+    <button class="lang-btn active" id="langEN" onclick="setLang('en')">🇺🇸 English</button>
+    <button class="lang-btn" id="langES" onclick="setLang('es')">🇪🇸 Español</button>
+  </div>
+
+  <button class="btn btn-gold" onclick="generateInstructions()">✦ Generate Barber Instructions</button>
+
+  <div class="loading-bar" id="loadingBar"></div>
+
+  <!-- OUTPUT -->
+  <div id="instructionOutput"></div>
+
+  <div id="saveConsultRow" style="display:none; margin-top:12px;">
+    <button class="btn btn-primary" onclick="saveConsultation()">💾 Save to Client Profile</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ -->
+<!-- SCREEN 2: STYLE LIBRARY            -->
+<!-- ═══════════════════════════════════ -->
+<div class="screen" id="screen-styles">
+  <p class="section-title">Style Library</p>
+  <p class="section-sub">Reference looks for consultation · <span style="color:var(--gold);font-weight:600">AI Preview coming soon</span></p>
+
+  <div class="pill-tabs">
+    <button class="pill-tab active" onclick="filterLibrary('all', this)">All</button>
+    <button class="pill-tab" onclick="filterLibrary('hair', this)">Hair</button>
+    <button class="pill-tab" onclick="filterLibrary('beard', this)">Beard</button>
+    <button class="pill-tab" onclick="filterLibrary('fade', this)">Fade</button>
+  </div>
+
+  <div class="style-grid" id="libraryStyleGrid"></div>
+</div>
+
+<!-- ═══════════════════════════════════ -->
+<!-- SCREEN 3: CLIENTS                   -->
+<!-- ═══════════════════════════════════ -->
+<div class="screen" id="screen-clients">
+  <p class="section-title">Clients</p>
+  <p class="section-sub">Profiles & consultation history</p>
+
+  <input type="text" id="clientSearch" placeholder="🔍  Search clients..." oninput="renderClients()" style="margin-bottom:14px" />
+
+  <div class="card" id="clientListContainer">
+    <div class="empty-state">
+      <div class="empty-icon">👤</div>
+      <div class="empty-title">No clients yet</div>
+      <div class="empty-sub">Start a consultation to create your first client profile</div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://dneebbpenmrgaolyjqus.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRuZWViYnBlbm1yZ2FvbHlqcXVzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyODM4OTQsImV4cCI6MjA4Nzg1OTg5NH0.vRZQ1QdqMyM8cbp2qldgzraK2p3gyb-o4eB-QtEAPps';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// ══════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════
+
+const STYLES = [
+  { id: 1, name: 'Classic Taper', category: 'hair', desc: 'Medium top, tapered sides', emoji: '💈',
+    img: 'https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=300&q=80',
+    prompt: 'Classic taper fade with medium length on top, skin fade on sides and back, clean line up around ears and neckline, natural finish on top.' },
+  { id: 2, name: 'High Fade Pompadour', category: 'fade', desc: 'Bold volume on top', emoji: '✨',
+    img: 'https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=300&q=80',
+    prompt: 'High skin fade starting mid-ear level, leaving significant volume on top styled into a pompadour. Clean razor line up, hard part optional.' },
+  { id: 3, name: 'Textured Crop', category: 'hair', desc: 'Short with texture on top', emoji: '🎯',
+    img: 'https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=300&q=80',
+    prompt: 'Short textured crop with a mid fade. Top cut short (1.5-2 inches), scissor-cut with point-cutting for texture. Clean tight taper on sides.' },
+  { id: 4, name: 'Full Beard Sculpt', category: 'beard', desc: 'Defined full beard', emoji: '🧔',
+    img: 'https://images.unsplash.com/photo-1504180800358-c69e2b71fac7?w=300&q=80',
+    prompt: 'Full beard trim: define cheek line cleanly, shape jawline, trim to even length throughout (suggest client preferred length), clean neck line just above Adam\'s apple.' },
+  { id: 5, name: 'Low Fade + Waves', category: 'fade', desc: '360 waves with low fade', emoji: '🌊',
+    img: 'https://images.unsplash.com/photo-1605497788044-5a32c7078486?w=300&q=80',
+    prompt: 'Low fade starting just above the ear, blended smoothly. Top left long enough for waves (minimum 1.5 inches). Moisturize and brush for wave definition.' },
+  { id: 6, name: 'Short Beard Trim', category: 'beard', desc: 'Neat stubble to short beard', emoji: '💪',
+    img: 'https://images.unsplash.com/photo-1559599101-f09722fb4948?w=300&q=80',
+    prompt: 'Short beard trim to 5-10mm uniform length. Define clean cheek lines, shape neckline above Adam\'s apple, fade into skin if desired at cheek line.' },
+  { id: 7, name: 'Slick Back Undercut', category: 'hair', desc: 'Disconnected undercut', emoji: '⚡',
+    img: 'https://images.unsplash.com/photo-1552642986-ccb41e7059e7?w=300&q=80',
+    prompt: 'Disconnected undercut: shave or very short sides (skin or #1), leave top long (3+ inches) to slick back. Hard disconnect at occipital bone.' },
+  { id: 8, name: 'Mid Fade + Beard Combo', category: 'fade', desc: 'Fade blended into beard', emoji: '🔥',
+    img: 'https://images.unsplash.com/photo-1519864600265-abb23847ef2c?w=300&q=80',
+    prompt: 'Mid fade that blends seamlessly into a shaped beard. Fade from skin at the temple, blend into the beard at the cheek line. Trim beard to uniform 15-20mm.' },
+];
+
+let currentLang = 'en';
+let clients = [];
+let consultations = [];
+let selectedStyleId = null;
+let currentPhotoDataUrl = null;
+let lastGeneratedInstructions = null;
+let isNewClientMode = false;
+
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
+
+async function init() {
+  renderConsultStyleGrid();
+  renderLibraryGrid();
+  try {
+    const { data: clientData } = await sb.from('clients').select('*').order('created_at', { ascending: true });
+    clients = clientData || [];
+  } catch(e) { clients = []; }
+  try {
+    const { data: consultData } = await sb.from('consultations').select('*').order('date', { ascending: true });
+    consultations = consultData || [];
+  } catch(e) { consultations = []; }
+  renderClients();
+  populateClientDropdown();
+  checkApiKey();
+}
+
+function setLang(lang) {
+  currentLang = lang;
+  document.getElementById('langEN').classList.toggle('active', lang === 'en');
+  document.getElementById('langES').classList.toggle('active', lang === 'es');
+}
+
+function checkApiKey() { /* API key managed server-side */ }
+
+// ══════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════
+
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+  event.currentTarget.classList.add('active');
+  if (name === 'clients') renderClients();
+}
+
+// ══════════════════════════════════════════
+// API KEY
+// ══════════════════════════════════════════
+
+
+
+
+document.getElementById('clientModal').addEventListener('click', function(e) {
+  if (e.target === this) this.classList.remove('open');
+});
+
+// ══════════════════════════════════════════
+// STYLE GRID
+// ══════════════════════════════════════════
+
+function renderConsultStyleGrid(filter = 'all') {
+  const filtered = filter === 'all' ? STYLES : STYLES.filter(s => s.category === filter);
+  const grid = document.getElementById('consultStyleGrid');
+  grid.innerHTML = filtered.map(s => `
+    <div class="style-card ${selectedStyleId === s.id ? 'selected' : ''}" onclick="selectStyle(${s.id})" id="sc-${s.id}">
+      <img src="${s.img}" alt="${s.name}" onerror="this.style.display='none'" loading="lazy">
+      <div class="style-card-label">${s.name}</div>
+      <div class="style-card-sub">${s.desc}</div>
+    </div>
+  `).join('');
+}
+
+function renderLibraryGrid(filter = 'all') {
+  const filtered = filter === 'all' ? STYLES : STYLES.filter(s => s.category === filter);
+  const grid = document.getElementById('libraryStyleGrid');
+  grid.innerHTML = filtered.map(s => `
+    <div class="style-card">
+      <img src="${s.img}" alt="${s.name}" onerror="this.style.display='none'" loading="lazy">
+      <div class="style-card-label">${s.name}</div>
+      <div class="style-card-sub">${s.desc}</div>
+    </div>
+  `).join('');
+}
+
+function filterStyles(cat, btn) {
+  document.querySelectorAll('#screen-consult .pill-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderConsultStyleGrid(cat);
+}
+
+function filterLibrary(cat, btn) {
+  document.querySelectorAll('#screen-styles .pill-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderLibraryGrid(cat);
+}
+
+function selectStyle(id) {
+  selectedStyleId = id;
+  renderConsultStyleGrid(
+    document.querySelector('#screen-consult .pill-tab.active').textContent.toLowerCase().replace('all','all')
+  );
+  const style = STYLES.find(s => s.id === id);
+  document.getElementById('selectedStyleInfo').style.display = 'block';
+  document.getElementById('selectedStyleName').textContent = style.name;
+}
+
+// ══════════════════════════════════════════
+// PHOTO
+// ══════════════════════════════════════════
+
+function handlePhoto(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    currentPhotoDataUrl = e.target.result;
+    const preview = document.getElementById('photoPreview');
+    preview.src = currentPhotoDataUrl;
+    preview.style.display = 'block';
+    document.querySelector('.photo-upload-icon').textContent = '✅';
+    document.querySelector('.photo-upload-text').textContent = 'Photo loaded — tap to change';
+  };
+  reader.readAsDataURL(file);
+}
+
+// ══════════════════════════════════════════
+// CLIENTS
+// ══════════════════════════════════════════
+
+function populateClientDropdown() {
+  const sel = document.getElementById('consultClient');
+  const existing = sel.value;
+  sel.innerHTML = '<option value="">— Select or create client —</option>';
+  clients.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c.id;
+    opt.textContent = c.name;
+    sel.appendChild(opt);
+  });
+  if (existing) sel.value = existing;
+}
+
+function onClientSelect() {
+  const val = document.getElementById('consultClient').value;
+  if (val && isNewClientMode) {
+    toggleNewClient();
+  }
+}
+
+function toggleNewClient() {
+  isNewClientMode = !isNewClientMode;
+  document.getElementById('newClientFields').style.display = isNewClientMode ? 'block' : 'none';
+  if (isNewClientMode) document.getElementById('consultClient').value = '';
+}
+
+async function saveClientIfNew() {
+  if (isNewClientMode) {
+    const name = document.getElementById('newClientName').value.trim();
+    if (!name) return null;
+    const newClient = {
+      name,
+      notes: document.getElementById('newClientNote').value.trim(),
+      created_at: new Date().toISOString(),
+    };
+    const { data, error } = await sb.from('clients').insert([newClient]).select().single();
+    if (error) { alert('Error saving client: ' + error.message); return null; }
+    clients.push(data);
+    populateClientDropdown();
+    document.getElementById('consultClient').value = data.id;
+    isNewClientMode = false;
+    document.getElementById('newClientFields').style.display = 'none';
+    return data.id;
+  }
+  return document.getElementById('consultClient').value || null;
+}
+
+function renderClients() {
+  const search = (document.getElementById('clientSearch')?.value || '').toLowerCase();
+  const filtered = clients.filter(c => c.name.toLowerCase().includes(search));
+  const container = document.getElementById('clientListContainer');
+
+  if (filtered.length === 0) {
+    container.innerHTML = `<div class="empty-state">
+      <div class="empty-icon">👤</div>
+      <div class="empty-title">${clients.length === 0 ? 'No clients yet' : 'No results'}</div>
+      <div class="empty-sub">${clients.length === 0 ? 'Start a consultation to create client profiles' : 'Try a different search'}</div>
+    </div>`;
+    return;
+  }
+
+  container.innerHTML = filtered.map(c => {
+    const cConsults = consultations.filter(x => x.client_id === c.id);
+    const last = cConsults.length ? new Date(cConsults[cConsults.length - 1].date).toLocaleDateString('en-US', {month:'short', day:'numeric'}) : null;
+    return `<div class="client-row" onclick="openClientProfile('${c.id}')">
+      <div class="avatar">${c.name[0].toUpperCase()}</div>
+      <div class="client-row-info">
+        <div class="client-row-name">${c.name}</div>
+        <div class="client-row-meta">${cConsults.length} visit${cConsults.length !== 1 ? 's' : ''}${last ? ' · Last: ' + last : ''}</div>
+      </div>
+      <span class="chevron">›</span>
+    </div>`;
+  }).join('');
+}
+
+function openClientProfile(clientId) {
+  const client = clients.find(c => c.id === clientId);
+  if (!client) return;
+  const cConsults = consultations.filter(x => x.client_id === clientId).reverse();
+
+  const timelineHtml = cConsults.length === 0 ? '<p style="color:var(--muted);font-size:13px">No visits yet.</p>' :
+    cConsults.map((con, i) => `
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div>
+          <div class="timeline-date">${new Date(con.date).toLocaleDateString('en-US', {month:'long', day:'numeric', year:'numeric'})}</div>
+          <div class="timeline-desc"><strong>${con.style_name || 'Custom cut'}</strong></div>
+          ${con.notes ? `<div style="font-size:12px;color:var(--muted);margin-top:2px">${con.notes}</div>` : ''}
+          <button class="btn btn-outline btn-sm" style="margin-top:8px" onclick="viewInstructions('${con.id}')">View Instructions</button>
+        </div>
+      </div>
+    `).join('');
+
+  document.getElementById('clientModalContent').innerHTML = `
+    <div class="modal-handle"></div>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+      <div class="avatar" style="width:56px;height:56px;font-size:24px">${client.name[0].toUpperCase()}</div>
+      <div>
+        <div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700">${client.name}</div>
+        ${client.notes ? `<div style="font-size:12px;color:var(--muted);margin-top:2px">${client.notes}</div>` : ''}
+      </div>
+    </div>
+    <hr class="divider">
+    <div style="font-size:12px;font-weight:600;letter-spacing:0.8px;text-transform:uppercase;color:var(--muted);margin-bottom:12px">Visit History</div>
+    <div class="timeline">${timelineHtml}</div>
+    <div style="height:16px"></div>
+    <button class="btn btn-outline" onclick="document.getElementById('clientModal').classList.remove('open')">Close</button>
+  `;
+  document.getElementById('clientModal').classList.add('open');
+}
+
+function viewInstructions(consultId) {
+  const con = consultations.find(c => c.id === consultId);
+  if (!con) return;
+  document.getElementById('clientModal').classList.remove('open');
+  // Show on consult screen
+  showScreenDirect('consult');
+  document.getElementById('instructionOutput').innerHTML = renderInstructionSheet(con.instructions, con.style_name, con.lang || 'en');
+  document.getElementById('saveConsultRow').style.display = 'none';
+  window.scrollTo(0, document.getElementById('instructionOutput').offsetTop - 80);
+}
+
+function showScreenDirect(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+  document.querySelector('nav button:first-child').classList.add('active');
+}
+
+// ══════════════════════════════════════════
+// AI GENERATION
+// ══════════════════════════════════════════
+
+async function generateInstructions() {
+  if (!selectedStyleId) {
+    alert('Please select a style from the grid above.');
+    return;
+  }
+
+  const style = STYLES.find(s => s.id === selectedStyleId);
+  const clientId = document.getElementById('consultClient').value;
+  const clientName = clientId ? clients.find(c => c.id === clientId)?.name : document.getElementById('newClientName')?.value || 'Client';
+  const extraNotes = document.getElementById('extraNotes').value.trim();
+
+  // Get past visits for context
+  let historyContext = '';
+  if (clientId) {
+    const pastVisits = consultations.filter(x => x.client_id === clientId).slice(-3);
+    if (pastVisits.length) {
+      historyContext = `\n\nPast visit history for this client:\n` + pastVisits.map(v =>
+        `- ${new Date(v.date).toLocaleDateString()}: ${v.styleName} — "${v.notes || 'no notes'}"`
+      ).join('\n');
+    }
+  }
+
+  const spanishInstruction = currentLang === 'es'
+    ? 'IMPORTANT: Write the entire response in natural, native Mexican/US barbershop Spanish as real barbers speak it. Use authentic terms like al cero, a piel, con tijeras, perfilado, degradado. NOT a literal translation.'
+    : '';
+  const prompt = [
+    'You are an expert barber assistant. Generate a professional instruction sheet for a barber/stylist.',
+    '',
+    'Client: ' + (clientName || 'Walk-in client'),
+    'Selected Style: ' + style.name,
+    'Style Description: ' + style.desc,
+    'Base technique: ' + style.prompt,
+    extraNotes ? 'Client additional requests: ' + extraNotes : '',
+    historyContext,
+    '',
+    'Return ONLY valid JSON with no markdown or extra text. Use this exact structure:',
+    '{',
+    '  "sections": [',
+    '    { "title": "Overview", "summary": "One concise line with key specs a pro needs at a glance (guard sizes, lengths, finish)", "detail": "2-4 sentences of full context, technique notes, what to watch out for" },',
+    '    { "title": "Tools", "summary": "Comma-separated list of tools and guard sizes only", "detail": "Why each tool, alternatives, setup tips" },',
+    '    { "title": "Steps", "summary": "3-5 major steps each 3-5 words comma-separated (e.g. Start #1 sides, Blend to #2, Scissor top, Clean lineup)", "detail": "Full numbered step-by-step with technique details" },',
+    '    { "title": "Key Details", "summary": "2-3 most critical things to nail, very brief", "detail": "Expanded explanation of each critical point and how to execute it" },',
+    '    { "title": "Finishing", "summary": "Product and styling recommendation in one line", "detail": "Full finishing routine, application technique, what to avoid" }',
+    '  ]',
+    '}',
+    '',
+    'Use professional barber terminology. Be specific with guard numbers and lengths.',
+    spanishInstruction
+  ].filter(Boolean).join('\n');
+
+  document.getElementById('loadingBar').style.display = 'block';
+  document.getElementById('instructionOutput').innerHTML = '';
+  document.getElementById('saveConsultRow').style.display = 'none';
+  lastGeneratedInstructions = null;
+
+  try {
+    const response = await fetch('/.netlify/functions/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    const data = await response.json();
+    if (data.error) throw new Error(data.error.message);
+
+    const text = data.content[0].text;
+    lastGeneratedInstructions = text;
+
+    document.getElementById('instructionOutput').innerHTML = renderInstructionSheet(text, style.name, currentLang);
+    document.getElementById('saveConsultRow').style.display = 'block';
+    document.getElementById('instructionOutput').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  } catch (err) {
+    document.getElementById('instructionOutput').innerHTML = `
+      <div class="card" style="border-color:#e8a8a8;background:#fff5f5">
+        <p style="color:var(--rust);font-weight:600">Error generating instructions</p>
+        <p style="font-size:13px;color:var(--muted);margin-top:4px">${err.message}</p>
+      </div>`;
+  } finally {
+    document.getElementById('loadingBar').style.display = 'none';
+  }
+}
+
+function renderInstructionSheet(text, styleName, lang) {
+  lang = lang || currentLang;
+  let sections = [];
+  try {
+    // Aggressively strip any markdown fencing or extra whitespace
+    let clean = text.trim();
+    clean = clean.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/```\s*$/i, '').trim();
+    // If it still doesn't start with {, try to find the JSON object
+    if (!clean.startsWith('{')) {
+      const jsonStart = clean.indexOf('{');
+      const jsonEnd = clean.lastIndexOf('}');
+      if (jsonStart !== -1 && jsonEnd !== -1) {
+        clean = clean.slice(jsonStart, jsonEnd + 1);
+      }
+    }
+    console.log('Attempting to parse, clean starts with:', clean.substring(0, 50));
+    const parsed = JSON.parse(clean);
+    sections = parsed.sections || [];
+    console.log('Parsed sections count:', sections.length);
+  } catch(e) {
+    console.error('JSON parse error:', e.message);
+    console.log('Raw text received:', text.substring(0, 200));
+    // fallback: show raw text
+    return `
+      <div class="instruction-sheet">
+        <h3>✂ ${styleName} — Instruction Sheet</h3>
+        ${lang === 'es' ? '<p style="font-size:11px;color:var(--gold);margin-bottom:4px;letter-spacing:0.5px">🇪🇸 EN ESPAÑOL</p>' : ''}
+        <div class="section"><p style="white-space:pre-wrap">${text}</p></div>
+      </div>
+      <div class="share-row">
+        <button class="btn btn-outline btn-sm" onclick="copyInstructions()">📋 Copy</button>
+        <button class="btn btn-outline btn-sm" onclick="printInstructions()">🖨 Print</button>
+      </div>`;
+  }
+
+  const sectionsHtml = sections.map((sec, i) => `
+    <div class="section expandable-section" id="sec-${i}">
+      <div class="section-label">${sec.title}</div>
+      <div class="section-summary" onclick="toggleSection(${i})">${sec.summary}
+        <span class="expand-hint">tap for detail ↓</span>
+      </div>
+      <div class="section-detail" id="detail-${i}" style="display:none">${sec.detail.replace(/\n/g,'<br>')}</div>
+    </div>
+  `).join('');
+
+  return `
+    <div class="instruction-sheet">
+      <h3>✂ ${styleName} — Instruction Sheet</h3>
+      ${lang === 'es' ? '<p style="font-size:11px;color:var(--gold);margin-bottom:4px;letter-spacing:0.5px">🇪🇸 EN ESPAÑOL</p>' : ''}
+      <p style="font-size:11px;color:#8a8278;margin-bottom:14px;letter-spacing:0.5px">TAP ANY SECTION FOR FULL DETAIL</p>
+      ${sectionsHtml}
+    </div>
+    <div class="share-row">
+      <button class="btn btn-outline btn-sm" onclick="copyInstructions()">📋 Copy</button>
+      <button class="btn btn-outline btn-sm" onclick="printInstructions()">🖨 Print</button>
+    </div>`;
+}
+
+
+function toggleSection(i) {
+  const detail = document.getElementById('detail-' + i);
+  const hint = document.querySelector('#sec-' + i + ' .expand-hint');
+  const isOpen = detail.style.display !== 'none';
+  detail.style.display = isOpen ? 'none' : 'block';
+  if (hint) hint.textContent = isOpen ? 'tap for detail ↓' : 'tap to collapse ↑';
+}
+
+function copyInstructions() {
+  if (lastGeneratedInstructions) {
+    navigator.clipboard.writeText(lastGeneratedInstructions).then(() => alert('Instructions copied!'));
+  }
+}
+
+function printInstructions() {
+  if (lastGeneratedInstructions) {
+    const win = window.open('', '_blank');
+    win.document.write(`<html><head><title>CutScript Instructions</title><style>body{font-family:sans-serif;padding:20px;max-width:600px}h2{margin-bottom:16px}pre{white-space:pre-wrap;font-family:sans-serif;line-height:1.6}</style></head><body><h2>CutScript — Barber Instruction Sheet</h2><pre>${lastGeneratedInstructions}</pre></body></html>`);
+    win.print();
+  }
+}
+
+// ══════════════════════════════════════════
+// SAVE CONSULTATION
+// ══════════════════════════════════════════
+
+async function saveConsultation() {
+  if (!lastGeneratedInstructions) return;
+
+  const clientId = await saveClientIfNew() || document.getElementById('consultClient').value;
+  if (!clientId) {
+    alert('Please select or create a client to save this consultation.');
+    return;
+  }
+
+  const style = STYLES.find(s => s.id === selectedStyleId);
+  const consultation = {
+    client_id: clientId,
+    date: new Date().toISOString(),
+    style_id: selectedStyleId,
+    style_name: style?.name || 'Custom',
+    instructions: lastGeneratedInstructions,
+    notes: document.getElementById('extraNotes').value.trim(),
+    lang: currentLang,
+  };
+
+  const { data, error } = await sb.from('consultations').insert([consultation]).select().single();
+  if (error) { alert('Error saving consultation: ' + error.message); return; }
+  consultations.push(data);
+  renderClients();
+
+  document.getElementById('saveConsultRow').innerHTML = `
+    <div class="card" style="background:#f0fff4;border-color:#a0d9b0;text-align:center">
+      <p style="color:#2d8a4e;font-weight:600">✅ Saved to ${clients.find(c=>c.id===clientId)?.name}'s profile!</p>
+    </div>`;
+}
+
+// ══════════════════════════════════════════
+// START
+// ══════════════════════════════════════════
+
+init();
+</script>
+</body>
