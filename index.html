@@ -1069,7 +1069,9 @@ async function generateInstructions() {
     const data = await response.json();
     if (data.error) throw new Error(data.error.message);
 
-    const text = data.content[0].text;
+    const textBlock = data.content.find(b => b.type === 'text');
+    const text = textBlock ? textBlock.text : '';
+    if (!text) throw new Error('No text returned from the model.');
     lastGeneratedInstructions = text;
 
     document.getElementById('instructionOutput').innerHTML = renderInstructionSheet(text, style.name, currentLang);
