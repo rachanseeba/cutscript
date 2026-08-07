@@ -5,7 +5,7 @@
 // can't inflate them through the request body.
 
 const MODEL = 'claude-sonnet-5';
-const MAX_TOKENS = 1200;
+const MAX_TOKENS = 4000;
 const ANTHROPIC_VERSION = '2023-06-01';
 
 const MAX_BODY_BYTES = 20 * 1024; // ~20KB
